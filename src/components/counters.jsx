@@ -11,9 +11,23 @@ export default class Counters extends Component {
         ]
     };
 
+    constructor(){
+        super();
+        console.log('Constructor');
+    }
+    componentDidMount(){
+        console.log('ComponentDidMount');
+    }
+
     handleIncrement=(counter)=>{
         const counters = [...this.state.counters];
         counters[counters.indexOf(counter)].value++;
+        this.setState({counters});
+    }
+
+    handleDecrement=(counter)=>{
+        const counters = [...this.state.counters];
+        counters[counters.indexOf(counter)].value--;
         this.setState({counters});
     }
 
@@ -32,10 +46,11 @@ export default class Counters extends Component {
     }
     
     render() {
+        console.log('Render');
         return (
             <div>
                 <button onClick={this.handleReset} className="btn btn-warning m-2">Reset</button>
-                {this.state.counters.map(counter=> <Counter key={counter.id} counter={counter} onIncrement={this.handleIncrement} onDelete={this.handleDelete} /> )}
+                {this.state.counters.map(counter=> <Counter key={counter.id} counter={counter} onIncrement={this.handleIncrement} onDecrement={this.handleDecrement} onDelete={this.handleDelete} /> )}
             </div>
         );
     }
