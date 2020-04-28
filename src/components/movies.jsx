@@ -1,30 +1,34 @@
 import React, { Component } from 'react';
 import { getMovies } from '../services/fakeMovieService';
 import Like from './like';
+import Pagination from './pagination';
 
 export default class Movies extends Component {
     state = {
-        movies: getMovies()
+        movies: getMovies(),
+        pageSize: 4,
+        currentPage: 1
     }
 
     handleLike = (movie) => {
         const movies = [...this.state.movies];
         const index = movies.indexOf(movie);
-        // movies[index] = {...movies[index]};
-        // console.log(movies[index].liked);
         movies[index].liked = !movies[index].liked;
-        this.setState({movies});
+        this.setState({ movies });
     }
 
     handleDelete = (movie) => {
-        console.log(movie);
         const movies = this.state.movies.filter(m => m._id !== movie._id);
         this.setState({ movies: movies });
     }
 
+    handlePageChange = (page) => {
+        this.setState({ currentPage: page });
+    }
+
     render() {
-        console.log('movies');
         const { length: count } = this.state.movies;
+        const { pageSize, currentPage } = this.state;
         if (count === 0) {
             return <p>No movies yet.</p>
         }
@@ -53,6 +57,7 @@ export default class Movies extends Component {
                         ))}
                     </tbody>
                 </table>
+                <Pagination count={count} pageSize={pageSize} currentPage={currentPage} onPageChange={this.handlePageChange} />
             </React.Fragment>
         );
     }
