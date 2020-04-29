@@ -26,12 +26,19 @@ export default class Movies extends Component {
         this.setState({ currentPage: page });
     }
 
+    paginate(items, pageNumber, pageSize) {
+        const startIndex = (pageNumber - 1) * pageSize;
+        // console.log(items.slice(startIndex, startIndex+pageSize));
+        return items.slice(startIndex, startIndex+pageSize);
+    }
+
     render() {
         const { length: count } = this.state.movies;
-        const { pageSize, currentPage } = this.state;
+        const { movies: allMovies, pageSize, currentPage } = this.state;
         if (count === 0) {
             return <p>No movies yet.</p>
         }
+        const movies = this.paginate(allMovies, currentPage, pageSize);
         return (
             <React.Fragment>
                 <p>{count} movies</p>
@@ -45,7 +52,7 @@ export default class Movies extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.movies.map(movie => (
+                        {movies.map(movie => (
                             <tr key={movie._id}>
                                 <th>{movie.title}</th>
                                 <td>{movie.genre.name}</td>
