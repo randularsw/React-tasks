@@ -3,7 +3,7 @@ import React from 'react';
 const Pagination = (props) => {
     const { count, pageSize, currentPage, onPageChange } = props;
     const pageCount = Math.ceil(count / pageSize);
-    // console.log(currentPage);
+    // console.log(pageCount);
     if (pageCount === 1) return null;
     let pages = [];
     for (let i = 0; i < pageCount; i++) {
