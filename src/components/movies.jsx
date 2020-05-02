@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import { getMovies } from '../services/fakeMovieService';
-import Like from './like';
 import Pagination from './pagination';
 import ListGroup from './listGroup';
 import { getGenres } from '../services/fakeGenreService';
+import MoviesTable from './moviesTable';
+import _ from 'lodash';
 
 export default class Movies extends Component {
     state = {
         movies: [],
         genres: [],
         pageSize: 4,
-        currentPage: 1
+        currentPage: 1,
+        sortColumn: { path: 'title', order: 'asc' }
     }
 
     componentDidMount() {
-        const genres = [{name: 'All',_id:1}, ...getGenres()];
+        const genres = [{ name: 'All', _id: 1 }, ...getGenres()];
         this.setState({ movies: getMovies(), genres });
     }
 
@@ -28,6 +30,10 @@ export default class Movies extends Component {
     handleDelete = (movie) => {
         const movies = this.state.movies.filter(m => m._id !== movie._id);
         this.setState({ movies: movies });
+    }
+
+    handleSort = (sortColumn) => {
+        this.setState({ sortColumn });
     }
 
     handlePageChange = (page) => {
@@ -45,12 +51,16 @@ export default class Movies extends Component {
 
     render() {
         const { length: count } = this.state.movies;
-        const { movies: allMovies, genres, pageSize, currentPage, selectedGenre } = this.state;
+        const { movies: allMovies, genres, pageSize, currentPage, selectedGenre, sortColumn } = this.state;
         if (count === 0) {
             return <h4>No movies yet.</h4>
         }
-        const filtered = selectedGenre && selectedGenre._id!==1 ? allMovies.filter(m => m.genre._id === selectedGenre._id) : allMovies;
-        const movies = this.paginate(filtered, currentPage, pageSize);
+        // filter
+        const filtered = selectedGenre && selectedGenre._id !== 1 ? allMovies.filter(m => m.genre._id === selectedGenre._id) : allMovies;
+        // sort
+        const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order])
+        // paginate
+        const movies = this.paginate(sorted, currentPage, pageSize);
         return (
             <div className="row container-fluid">
                 <div className="col-3" style={{ marginTop: '175px', marginLeft: '100px' }}>
@@ -58,28 +68,7 @@ export default class Movies extends Component {
                 </div>
                 <div className="col m-5">
                     <h4>{filtered.length} movies available</h4>
-                    <table className="table mt-5">
-                        <thead>
-                            <tr>
-                                <th scope="col">Title</th>
-                                <th scope="col">Genre</th>
-                                <th scope="col">Stock</th>
-                                <th scope="col">Rate</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {movies.map(movie => (
-                                <tr key={movie._id}>
-                                    <th>{movie.title}</th>
-                                    <td>{movie.genre.name}</td>
-                                    <td>{movie.numberInStock}</td>
-                                    <td>{movie.dailyRentalRate}</td>
-                                    <td><Like liked={movie.liked} onClick={() => this.handleLike(movie)} /></td>
-                                    <td><button onClick={() => this.handleDelete(movie)} className="btn btn-danger">Delete</button></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <MoviesTable movies={movies} sortColumn={sortColumn} onLike={this.handleLike} onDelete={this.handleDelete} onSort={this.handleSort} />
                     <div className='d-flex justify-content-center'>
                         <Pagination count={filtered.length} pageSize={pageSize} currentPage={currentPage} onPageChange={this.handlePageChange} />
                     </div>
