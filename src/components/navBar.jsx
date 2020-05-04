@@ -10,8 +10,8 @@ const NavBar = () => {
 
       <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div className="navbar-nav">
-          <NavLink className="nav-item nav-link" to="/not-found">
-            XYZ
+          <NavLink className="nav-item nav-link" to="/login">
+            Login
           </NavLink>
         </div>
       </div>
