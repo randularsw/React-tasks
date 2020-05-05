@@ -6,6 +6,7 @@ import NotFound from "./components/notFound";
 import NavBar from "./components/navBar";
 import MovieDetail from "./components/movieDetail";
 import Login from "./components/login";
+import Register from "./components/register";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/movies/:id" component={MovieDetail}></Route>
           <Route path="/movies" component={Movies}></Route>
           <Route path="/login" component={Login}></Route>
+          <Route path="/register" component={Register}></Route>
           <Redirect exact from="/" to="/movies"></Redirect>
           <Redirect to="not-found" />
         </Switch>
