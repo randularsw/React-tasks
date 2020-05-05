@@ -77,7 +77,7 @@ export default class Movies extends Component {
     // filter
     let filtered = allMovies;
     if (selectedGenre && selectedGenre._id !== 1) {
-      allMovies.filter((m) => m.genre._id === selectedGenre._id);
+      filtered = allMovies.filter((m) => m.genre._id === selectedGenre._id);
     } else if (searchQuery) {
       filtered = allMovies.filter((m) =>
         m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
